@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  docker-app:
+    image: jonathaslima/beer-app
+    ports:
+    - 8080:8080
+    depends_on:
+    - mongodb
+
+
+  mongodb:
+    build: mongodb/
+    ports:
+    - 27017:27017
+    container_name: beer
+    volumes:
+    - beer_data:/data/db
+    - beer_data:/data/configdb
+volumes:
+  beer_data:
