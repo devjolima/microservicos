@@ -1,7 +1,8 @@
 README
 
-Execute this command to build the image
-sudo docker-compose up --build
+Para executar o projeto, a imagem do front end deve ter sido executada, nesta primeira versão deste compose, irei deixar da forma mais procedural, então, no projeto do front
+https://github.com/devjolima/front/tree/master/beer-e4y, faça o clone do mesmo entre no folder onde esta o projeto e execute:
 
-access url
-http://localhost:8080/fly/swagger-ui.html#/flights-rest
+sudo docker build -t beer-e4y .
+
+Após este passo, faça o clone deste projeto , e dentro da raiz execute docker-compose up (use o sudo em caso de necessário)

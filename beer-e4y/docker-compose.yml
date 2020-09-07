@@ -1,13 +1,17 @@
 version: '3'
 
 services:
+  front:
+    image: beer-e4y
+    ports:
+    - 80:80
+ 
   docker-app:
     image: jonathaslima/beer-app
     ports:
     - 8080:8080
     depends_on:
     - mongodb
-
 
   mongodb:
     build: mongodb/
