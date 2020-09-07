@@ -1,24 +1,28 @@
 package com.forcode.e4y.handler;
 
 
-import com.forcode.e4y.dto.BeerDTO;
-import com.forcode.e4y.repository.BeerRepository;
+import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
-
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.util.UriComponentsBuilder;
+import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
+
+
+import com.forcode.e4y.data.Beer;
+import com.forcode.e4y.dto.BeerDTO;
+import com.forcode.e4y.mapper.BeerMapper;
+import com.forcode.e4y.repository.BeerRepository;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
-
-import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 
 @Component
@@ -28,7 +32,7 @@ public class BeerHandler {
     private RestTemplate client;
 
     private final WebClient webClient;
-
+    
     @Autowired
     private BeerRepository beerRepository;
 
@@ -60,6 +64,15 @@ public class BeerHandler {
         //return ServerResponse.ok().contentType(MediaType.APPLICATION_STREAM_JSON)
         //        .body(fromPublisher(flux, BeerDTO.class));
     }
+    
+    public Mono<ServerResponse> createFavorite(ServerRequest req){
+    	
+    	final Mono<Beer> beer = req.bodyToMono(Beer.class);
+    	Mono<Beer> beerMono = beer.flatMap(beerRepository::save);
+    	
+        return ServerResponse.status(HttpStatus.CREATED).body(beerMono, Beer.class);
+    	
+    }
 
     /**
      * NON-FLUX CONSUMER
@@ -68,6 +81,13 @@ public class BeerHandler {
      */
     private BeerDTO[] getBeerName(String name) {
         return client.getForEntity("https://api.punkapi.com/v2/beers?beer_name={name}", BeerDTO[].class, name).getBody();
+    }
+    
+    public Mono<ServerResponse> getFavorites(ServerRequest req) {
+    	
+        Flux<BeerDTO>  beers = beerRepository.findAll().map(BeerMapper::toBeerDto);
+    	return ServerResponse.ok().contentType(MediaType.APPLICATION_STREAM_JSON)
+               .body(fromPublisher(beers, BeerDTO.class));
     }
 
     /**

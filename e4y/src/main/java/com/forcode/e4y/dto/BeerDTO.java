@@ -1,14 +1,18 @@
 package com.forcode.e4y.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
-
 import java.io.Serializable;
-import java.util.Date;
 
-@Getter
-@Setter
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class BeerDTO implements Serializable{
 
     @JsonProperty("name")
